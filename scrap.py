@@ -14,7 +14,13 @@ HEADERS = {
 # Step 1: Scrape Booking.com for Accommodation Details
 def scrape_booking(city):
     print(f"Scraping accommodations for city: {city}...")
-    url = BASE_URL.format(city=city.replace(" ", "+"))
+    # url = BASE_URL.format(city=city.replace(" ", "+"))
+    formatted_city = city.replace(" ", "+")
+    if city.lower() == "alba":
+        formatted_city += "+italy"
+
+    url = BASE_URL.format(city=formatted_city)
+    print(url)
     response = requests.get(url, headers=HEADERS)
     soup = BeautifulSoup(response.text, 'html.parser')
     
@@ -77,22 +83,22 @@ def scrape_address(link):
 def main():
     target_cities = [
         # Add the target cities here
-        # "Venice"
-        "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
-        "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
-        "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", "Anzio",
-        "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
-        "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
-        "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",
-        "Palermo", "Catania", "Taormina", "Syracuse", "Agrigento", "Cefalù", "Ragusa", "Trapani",
-        "Bari", "Lecce", "Alberobello", "Ostuni", "Polignano a Mare", "Monopoli", "Gallipoli", "Otranto",
-        "Cinque Terre", "Portofino", "Sanremo", "Alassio",
-        "Turin", "Alba", "Asti",
-        "Trento", "Bolzano", "Madonna di Campiglio", "Riva del Garda",
-        "Olbia", "Cagliari", "Sardinia",
-        "Ancona", "Urbino", "San Benedetto del Tronto", "Macerata",
-        "Perugia",
-        "Trieste", "Udine",
+        "Venice"
+        # "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
+        # "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
+        # "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", "Anzio",
+        # "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
+        # "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
+        # "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",
+        # "Palermo", "Catania", "Taormina", "Syracuse", "Agrigento", "Cefalù", "Ragusa", "Trapani",
+        # "Bari", "Lecce", "Alberobello", "Ostuni", "Polignano a Mare", "Monopoli", "Gallipoli", "Otranto",
+        # "Cinque Terre", "Portofino", "Sanremo", "Alassio",
+        # "Turin", "Alba", "Asti",
+        # "Trento", "Bolzano", "Madonna di Campiglio", "Riva del Garda",
+        # "Olbia", "Cagliari", "Sardinia",
+        # "Ancona", "Urbino", "San Benedetto del Tronto", "Macerata",
+        # "Perugia",
+        # "Trieste", "Udine",
     ]
     
     all_accommodations = []
