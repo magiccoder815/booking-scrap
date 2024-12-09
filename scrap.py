@@ -98,23 +98,22 @@ def main():
     global all_accommodations
 
     target_cities = [
-        "Venice"
-        # "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
-        # "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
-        # "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", "Anzio",
-        # "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
-        # "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
-        # "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",
-        # "Palermo", "Catania", "Taormina", "Syracuse", "Agrigento", "Cefalù", "Ragusa", "Trapani",
-        # "Bari", "Lecce", "Alberobello", "Ostuni", "Polignano a Mare", "Monopoli", "Gallipoli", "Otranto",
-        # "Cinque Terre", "Portofino", "Sanremo", "Alassio",
-        # "Turin", "Alba", "Asti",
-        # "Trento", "Bolzano", "Madonna di Campiglio", "Riva del Garda",
-        # "Olbia", "Cagliari", "Sardinia",
-        # "Ancona", "Urbino", "San Benedetto del Tronto", "Macerata",
-        # "Perugia",
-        # "Trieste", "Udine",
-        # "Aosta", "Courmayeur", "Cervinia", "La Thuile", "Gressoney-Saint-Jean", "Saint-Vincent", "Cogne", "Champoluc", "Antey-Saint-André", "Valtournenche"
+        "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
+        "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
+        "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", "Anzio",
+        "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
+        "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
+        "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",
+        "Palermo", "Catania", "Taormina", "Syracuse", "Agrigento", "Cefalù", "Ragusa", "Trapani",
+        "Bari", "Lecce", "Alberobello", "Ostuni", "Polignano a Mare", "Monopoli", "Gallipoli", "Otranto",
+        "Cinque Terre", "Portofino", "Sanremo", "Alassio",
+        "Turin", "Alba", "Asti",
+        "Trento", "Bolzano", "Madonna di Campiglio", "Riva del Garda",
+        "Olbia", "Cagliari", "Sardinia",
+        "Ancona", "Urbino", "San Benedetto del Tronto", "Macerata",
+        "Perugia",
+        "Trieste", "Udine",
+        "Aosta", "Courmayeur", "Cervinia", "La Thuile", "Gressoney-Saint-Jean", "Saint-Vincent", "Cogne", "Champoluc", "Antey-Saint-André", "Valtournenche"
     ]
     
     for city in target_cities:
