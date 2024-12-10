@@ -17,13 +17,11 @@ This Python script scrapes accommodation details (name, link, address, and prope
 
 ## Installation
 
-1. Clone or download this repository.
-
-2. Install the required dependencies:
+1. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-3. Run Script
+2. Run Script
    ```bash
    python <file_name>.py
    ```

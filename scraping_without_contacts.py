@@ -16,7 +16,7 @@ import random
 
 # Constants
 BASE_URL = "https://www.booking.com/searchresults.html?ss={city}"
-OUTPUT_FILE = "accommodations_without_contacts_Venice.xlsx"
+OUTPUT_FILE = "accommodations_without_contacts.xlsx"
 all_accommodations = []  # Global variable to store progress
 
 # Graceful Exit Handling
@@ -126,7 +126,7 @@ def save_data_to_excel():
 def main():
     global all_accommodations
 
-    target_cities = ["Venice"]
+    target_cities = ["Milan"]
 
     for city in target_cities:
         try:
