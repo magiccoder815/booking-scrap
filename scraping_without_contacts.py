@@ -40,7 +40,6 @@ def dismiss_sign_in_modal(driver):
 
 # Step 1: Scrape Booking.com for Accommodation Details
 def scrape_booking(city):
-    print(f"Scraping accommodations for city: {city}...")
     formatted_city = city.replace(" ", "+")
     if city.lower() == "alba":
         formatted_city += "+italy"
@@ -79,45 +78,40 @@ def scrape_booking(city):
             load_more_button = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, '//button[.//span[text()="Load more results"]]'))
             )
-            print("Found 'Load more results'. Clicking to load more accommodations...")
+            # print("Found 'Load more results'. Clicking to load more accommodations...")
             load_more_button.click()
             time.sleep(2)  # Wait for the new results to load
         except Exception as e:
             print("No 'Load more results' button found or an error occurred.")
+            print(f"Started the Scraping accommodations for city: {city}...")
             break  # Exit loop when the button is not found (all results loaded)
 
     driver.quit()
     return accommodations
 
 # Step 2: Scrape the Address from the Accommodation Page
-def scrape_address(link):
+def scrape_address_property(link):
     try:
         response = requests.get(link)
         soup = BeautifulSoup(response.text, 'html.parser')
         address_element = soup.select_one('div[tabindex="0"].a53cbfa6de.f17adf7576')
         if address_element:
-            return re.sub(r"(Italy.*)", "Italy", address_element.get_text(strip=True))
-        return "N/A"
-    except Exception as e:
-        print(f"Error scraping address for {link}: {e}")
-        return "N/A"
-
-# Step 3: Scrape the Property Type from the Accommodation Page
-def scrape_property(link):
-    try:
-        response = requests.get(link)
-        soup = BeautifulSoup(response.text, 'html.parser')
+           address = re.sub(r"(Italy.*)", "Italy", address_element.get_text(strip=True))
+        
         property_element = soup.select_one('a.bui_breadcrumb__link_masked')
         if property_element:
             property_text = property_element.get_text(strip=True)
             # Extract property type from the text
             match = re.search(r"\((.*?)\)", property_text)
             if match:
-                return match.group(1)  # Return the property type (e.g., Hotel)
-        return "N/A"
+                property_type = match.group(1) 
+
+        return address, property_type
+            
     except Exception as e:
-        print(f"Error scraping property type for {link}: {e}")
-        return "N/A"
+        print(f"Error scraping address and property type for {link}: {e}")
+        return "N/A", "N/A"
+
 
 # Save Data to Excel
 def save_data_to_excel():
@@ -142,14 +136,11 @@ def main():
                 time.sleep(random.uniform(1, 3))
                 
                 # Scrape the address
-                address = scrape_address(accommodation["Link"])
+                address, property_type = scrape_address_property(accommodation["Link"])
                 accommodation["Address"] = address
+                accommodation["Property"] = property_type
 
-                # Scrape the property type
-                property = scrape_property(accommodation["Link"])
-                accommodation["Property"] = property
-
-                print(f"Processed: {accommodation['Name']} in {city}", flush=True)
+                # print(f"Processed: {accommodation['Name']} in {city}", flush=True)
 
                 all_accommodations.append(accommodation)
                 save_data_to_excel()  # Save progress after each accommodation
