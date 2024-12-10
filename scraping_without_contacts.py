@@ -12,6 +12,7 @@ import re
 import time
 import signal
 import sys
+import random
 
 # Constants
 BASE_URL = "https://www.booking.com/searchresults.html?ss={city}"
@@ -31,7 +32,6 @@ def dismiss_sign_in_modal(driver):
     try:
         print("Waiting for Sign-in modal to appear...")
         time.sleep(10)  # Wait for the modal to appear (adjustable delay)
-        # Wait briefly for the modal to appear
         close_button = driver.find_element(By.CSS_SELECTOR, 'button[aria-label="Dismiss sign-in info."]')
         close_button.click()
         print("Sign-in modal dismissed by clicking the close button.")
@@ -59,11 +59,12 @@ def scrape_booking(city):
     accommodations = []
 
     while True:
-        # Wait for the page to load and scrape the data
-        time.sleep(2)  # Give time for the page to load
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        # Scroll to the bottom to load the "Load More results" button
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)  # Allow time for content to load
         
         # Scrape accommodations
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
         for item in soup.select('[data-testid="property-card-container"]'):
             name = item.select_one('[data-testid="title"]').get_text(strip=True) if item.select_one('[data-testid="title"]') else "N/A"
             link_element = item.select_one('[data-testid="property-card-desktop-single-image"]')
@@ -76,7 +77,7 @@ def scrape_booking(city):
         # Check if "Load more results" button is present
         try:
             load_more_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//button[.//span[text()="Load more results"]]'))
+                EC.element_to_be_clickable((By.XPATH, '//button[.//span[text()="Load more results"]]'))
             )
             print("Found 'Load more results'. Clicking to load more accommodations...")
             load_more_button.click()
@@ -94,12 +95,14 @@ def scrape_address(link):
         response = requests.get(link)
         soup = BeautifulSoup(response.text, 'html.parser')
         address_element = soup.select_one('div[tabindex="0"].a53cbfa6de.f17adf7576')
-        address = re.sub(r"(Italy.*)", "Italy", address_element.get_text(strip=True) if address_element else "N/A")
-        return address
-    except Exception as e:
+        if address_element:
+            return re.sub(r"(Italy.*)", "Italy", address_element.get_text(strip=True))
         return "N/A"
-    
-    # Step 3: Scrape the Property Type from the Accommodation Page
+    except Exception as e:
+        print(f"Error scraping address for {link}: {e}")
+        return "N/A"
+
+# Step 3: Scrape the Property Type from the Accommodation Page
 def scrape_property(link):
     try:
         response = requests.get(link)
@@ -107,13 +110,13 @@ def scrape_property(link):
         property_element = soup.select_one('a.bui_breadcrumb__link_masked')
         if property_element:
             property_text = property_element.get_text(strip=True)
-        # Extract property type from the text
+            # Extract property type from the text
             match = re.search(r"\((.*?)\)", property_text)
             if match:
                 return match.group(1)  # Return the property type (e.g., Hotel)
-        print(property_element)
-        return "N/A"  # Return "N/A" if the property type is not found
+        return "N/A"
     except Exception as e:
+        print(f"Error scraping property type for {link}: {e}")
         return "N/A"
 
 # Save Data to Excel
@@ -136,14 +139,17 @@ def main():
             accommodations = scrape_booking(city)
             for accommodation in accommodations:
                 # Pause to avoid rate limits
-                time.sleep(1)
+                time.sleep(random.uniform(1, 3))
                 
                 # Scrape the address
                 address = scrape_address(accommodation["Link"])
                 accommodation["Address"] = address
 
+                # Scrape the property type
                 property = scrape_property(accommodation["Link"])
                 accommodation["Property"] = property
+
+                print(f"Processed: {accommodation['Name']} in {city}", flush=True)
 
                 all_accommodations.append(accommodation)
                 save_data_to_excel()  # Save progress after each accommodation
