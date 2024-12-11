@@ -20,7 +20,7 @@ BASE_URL = "https://www.booking.com/searchresults.html?ss={city}"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
 }
-MAX_LIMIT = 30  # Set MAX_LIMIT here, change to 0 for unlimited scraping
+MAX_LIMIT = 20  # Set MAX_LIMIT here, change to 0 for unlimited scraping
 all_accommodations = []  # Global variable to store progress
 scraping_in_progress = True  # Global flag to control the scraping process
 
@@ -64,7 +64,7 @@ def scrape_booking(city):
 
     # Set up the Selenium WebDriver
     options = webdriver.ChromeOptions()
-    options.headless = True  # Disable headless mode to visually debug if needed
+    options.headless = False  # Disable headless mode to visually debug if needed
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get(url)
 
@@ -206,23 +206,7 @@ def save_total_result():
 
 def main():
     target_cities = [
-        "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
-        "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
-        "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", "Anzio",
-        "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
-        "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
-        "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",
-        "Palermo", "Catania", "Taormina", "Syracuse", "Agrigento", "Cefalù", "Ragusa", "Trapani",
-        "Bari", "Lecce", "Alberobello", "Ostuni", "Polignano a Mare", "Monopoli", "Gallipoli", "Otranto",
-        "Cinque Terre", "Portofino", "Sanremo", "Alassio",
-        "Turin", "Alba", "Asti",
-        "Trento", "Bolzano", "Madonna di Campiglio", "Riva del Garda",
-        "Olbia", "Cagliari", "Sardinia",
-        "Ancona", "Urbino", "San Benedetto del Tronto", "Macerata",
-        "Perugia",
-        "Trieste", "Udine",
-        "Aosta", "Courmayeur", "Cervinia", "La Thuile", "Gressoney-Saint-Jean", "Saint-Vincent", "Cogne", "Champoluc", "Antey-Saint-André", "Valtournenche"
-    
+        "Rome", "Milan", "Venice", "Florence", "Naples", "Bologna", "Palermo", "Bari", "Lecce", "Turin"
     ]
 
     for city in target_cities:

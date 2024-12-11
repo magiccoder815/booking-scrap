@@ -59,19 +59,41 @@ def scrape_address(link):
         return "N/A"
 
 # Step 3: Use Google Search to Find Contact Details
+def normalize_phone(phone):
+    """Normalize phone numbers to the format '+39 XXX XXX XXXX'."""
+    # Remove all unwanted characters (keep digits and '+')
+    phone_cleaned = re.sub(r"[^\d\s\+]", "", phone)
+    phone_cleaned = re.sub(r"\s+", "", phone_cleaned)  # Remove spaces for formatting
+    if phone_cleaned.startswith("+39"):  # Ensure it starts with +39
+        # Reformat into +39 XXX XXX XXXX
+        formatted_phone = f"{phone_cleaned[:3]} {phone_cleaned[3:6]} {phone_cleaned[6:9]} {phone_cleaned[9:]}"
+        return formatted_phone.strip()
+    return None  # Return None if it doesn't match the expected pattern
+
+def validate_email(email):
+    """Ensure emails start with a letter and are valid."""
+    email_pattern = r"^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    return email if re.match(email_pattern, email) else None
+
 def find_contact_details(name, city):
     try:
         query = f"{name} {city} phone email"
         emails = []
         phones = []
-        
+
         for result in search(query, num_results=5):
             try:
                 response = requests.get(result, headers=HEADERS)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                emails += re.findall(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", soup.get_text())
-                phones += re.findall(r"\+39[\s\-()0-9]{8,}", soup.get_text())  # Italian numbers
-                # phones += re.findall(r"\+?\d[\d\s\-\(\)]{7,}", soup.get_text())  # General numbers
+
+                # Extract emails
+                raw_emails = re.findall(r"[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", soup.get_text())
+                emails += [validate_email(email) for email in raw_emails if validate_email(email) is not None]
+
+                # Extract phone numbers
+                raw_phones = re.findall(r"\+39[\s\-()0-9]{8,}", soup.get_text())  # Italian numbers
+                phones += [normalize_phone(phone) for phone in raw_phones if normalize_phone(phone) is not None]
+
             except Exception as e:
                 print(f"Error fetching contact details from {result}: {e}")
                 continue
@@ -98,22 +120,23 @@ def main():
     global all_accommodations
 
     target_cities = [
-        "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
-        "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
-        "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", "Anzio",
-        "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
-        "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
-        "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",
-        "Palermo", "Catania", "Taormina", "Syracuse", "Agrigento", "Cefalù", "Ragusa", "Trapani",
-        "Bari", "Lecce", "Alberobello", "Ostuni", "Polignano a Mare", "Monopoli", "Gallipoli", "Otranto",
-        "Cinque Terre", "Portofino", "Sanremo", "Alassio",
-        "Turin", "Alba", "Asti",
-        "Trento", "Bolzano", "Madonna di Campiglio", "Riva del Garda",
-        "Olbia", "Cagliari", "Sardinia",
-        "Ancona", "Urbino", "San Benedetto del Tronto", "Macerata",
-        "Perugia",
-        "Trieste", "Udine",
-        "Aosta", "Courmayeur", "Cervinia", "La Thuile", "Gressoney-Saint-Jean", "Saint-Vincent", "Cogne", "Champoluc", "Antey-Saint-André", "Valtournenche"
+        "Venice"
+        # "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
+        # "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
+        # "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", "Anzio",
+        # "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
+        # "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
+        # "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",
+        # "Palermo", "Catania", "Taormina", "Syracuse", "Agrigento", "Cefalù", "Ragusa", "Trapani",
+        # "Bari", "Lecce", "Alberobello", "Ostuni", "Polignano a Mare", "Monopoli", "Gallipoli", "Otranto",
+        # "Cinque Terre", "Portofino", "Sanremo", "Alassio",
+        # "Turin", "Alba", "Asti",
+        # "Trento", "Bolzano", "Madonna di Campiglio", "Riva del Garda",
+        # "Olbia", "Cagliari", "Sardinia",
+        # "Ancona", "Urbino", "San Benedetto del Tronto", "Macerata",
+        # "Perugia",
+        # "Trieste", "Udine",
+        # "Aosta", "Courmayeur", "Cervinia", "La Thuile", "Gressoney-Saint-Jean", "Saint-Vincent", "Cogne", "Champoluc", "Antey-Saint-André", "Valtournenche"
     ]
     
     for city in target_cities:
@@ -129,8 +152,8 @@ def main():
 
                 # Search for contact details via Google
                 contact_details = find_contact_details(accommodation["Name"], city)
-                accommodation["Emails"] = ", ".join(contact_details["Emails"])
-                accommodation["Phones"] = ", ".join(contact_details["Phones"])
+                accommodation["Email"] = contact_details["Emails"][0]
+                accommodation["Phone Number"] = contact_details["Phones"][0]
 
                 all_accommodations.append(accommodation)
                 save_data_to_excel()  # Save progress after each accommodation
