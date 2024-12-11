@@ -208,7 +208,7 @@ def main():
     target_cities = [
         "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
         "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
-        "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", "Anzio",
+        "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta", 
         "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
         "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
         "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",

@@ -23,5 +23,5 @@ This Python script scrapes accommodation details (name, link, address, and prope
    ```
 2. Run Script
    ```bash
-   python <file_name>.py
+   python scraping.py
    ```
