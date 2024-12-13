@@ -14,6 +14,7 @@ import time
 import signal
 import sys
 import random
+import os
 
 # Constants
 BASE_URL = "https://www.booking.com/searchresults.html?ss={city}"
@@ -190,23 +191,45 @@ def save_data_to_excel(city):
     if all_accommodations:
         # Save only the accommodations for the current city
         city_accommodations = [accom for accom in all_accommodations if accom['City'] == city]
+        # Create the "scraping" folder if it doesn't exist
+        os.makedirs("scraping", exist_ok=True)
+        
+        # Save the file in the "scraping" folder
+        city_filename = os.path.join("scraping", f"{city}_accommodations.xlsx")
         df = pd.DataFrame(city_accommodations)
-        # Save the file with the city name
-        city_filename = f"{city}_accommodations.xlsx"
         df.to_excel(city_filename, index=False)
-        print(f"Saved {len(city_accommodations)} accommodations for {city}.")
+        
+        print(f"Saved {len(city_accommodations)} accommodations for {city} in {city_filename}.")
 
-# Save the Total Data to Excel
+# Save the Total Data to Excel in the root directory
 def save_total_result():
     global all_accommodations
     if all_accommodations:
+        # Save the total data in the root directory
         df = pd.DataFrame(all_accommodations)
-        df.to_excel("total_accommodations.xlsx", index=False)
-        print(f"Saved total results of {len(all_accommodations)} accommodations.")
+        total_filename = "total_accommodations.xlsx"
+        df.to_excel(total_filename, index=False)
+        print(f"Saved total results of {len(all_accommodations)} accommodations in {total_filename}.")
 
 def main():
     target_cities = [
-        "Rome", "Milan", "Venice", "Florence", "Naples", "Bologna", "Palermo", "Bari", "Lecce", "Turin"
+        "Venice", "Verona", "Padova", "Vicenza", "Bassano del Grappa", "Cortina d'Ampezzo", "Jesolo", 
+        "Milan", "Como", "Bergamo", "Brescia", "Mantua", "Sirmione", "Pavia", "Cremona", "Lecco",
+        "Rome", "Tivoli", "Viterbo", "Ostia Antica", "Ostia", "Fiumicino", "Gaeta",
+        "Florence", "Pisa", "Siena", "Lucca", "Forte dei Marmi", "Viareggio",
+        "Naples", "Pompeii", "Amalfi", "Sorrento", "Capri", "Ischia", "Procida", "Caserta",
+        "Bologna", "Rimini", "Ferrara", "Modena", "Parma", "Ravenna", "Cesenatico", "Riccione",
+        "Palermo", "Catania", "Taormina", "Syracuse", "Agrigento", "Cefalù", "Ragusa", "Trapani",
+        "Bari", "Lecce", "Alberobello", "Ostuni", "Polignano a Mare", "Monopoli", "Gallipoli", "Otranto",
+        "Cinque Terre", "Portofino", "Sanremo", "Alassio",
+        "Turin", "Alba", "Asti",
+        "Trento", "Bolzano", "Madonna di Campiglio", "Riva del Garda",
+        "Olbia", "Cagliari", "Sardinia",
+        "Ancona", "Urbino", "San Benedetto del Tronto", "Macerata",
+        "Perugia",
+        "Trieste", "Udine",
+        "Aosta", "Courmayeur", "Cervinia", "La Thuile", "Gressoney-Saint-Jean", "Saint-Vincent", "Cogne", "Champoluc", "Antey-Saint-André", "Valtournenche"
+    
     ]
 
     for city in target_cities:
